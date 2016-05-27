@@ -1394,10 +1394,12 @@ issue() {
 
         mkdir -p "$wellknown_path"
         printf "%s" "$keyauthorization" > "$wellknown_path/$token"
-        if [ ! "$usingApache" ] ; then
+        if [ ! "$usingApache" ] && [ "$UID" = "0" ] ; then
           webroot_owner=$(_stat $_currentRoot)
           _debug "Changing owner/group of .well-known to $webroot_owner"
           chown -R $webroot_owner "$_currentRoot/.well-known"
+        elif [ ! "$UID" = "0" ]; then
+          _debug "Not changing owner/group of .well-known as am not running as root."
         fi
         
       fi
